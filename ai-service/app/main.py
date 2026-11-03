@@ -1,27 +1,27 @@
-import json
 import time
 from pathlib import Path
 from typing import Any, Dict, List
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 from app.core.config import get_settings
+from app.knowledge_base import load_nith_documents
 from app.nlp.preprocessing import clean_document, normalize_text
-from app.rag.generator import generate_answer
+from app.rag.generator import GeminiGenerationError, generate_answer
 from app.rag.prompt_builder import build_prompt
 from app.rag.retriever import retrieve_context
 
-app = FastAPI(title='College FAQ AI Service', version='1.0.0')
+app = FastAPI(title='NIT Hamirpur Student Assistant API', version='1.0.0')
 settings = get_settings()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-FAQ_PATH = BASE_DIR / 'data' / 'faqs.json'
+NITH_DOCUMENTS_PATH = BASE_DIR / 'data' / 'nith_documents.json'
 
 
 class ChatRequest(BaseModel):
     question: str = Field(..., min_length=1)
-    conversationHistory: List[Dict[str, str]] = []
+    conversationHistory: List[Dict[str, str]] = Field(default_factory=list)
 
 
 class DocumentIndexRequest(BaseModel):
@@ -31,8 +31,7 @@ class DocumentIndexRequest(BaseModel):
     text: str | None = None
 
 
-with open(FAQ_PATH, 'r', encoding='utf-8') as faq_file:
-    FAQ_DATA = json.load(faq_file)
+NITH_DOCUMENTS = load_nith_documents(NITH_DOCUMENTS_PATH)
 
 
 @app.get('/api/v1/health')
@@ -40,11 +39,10 @@ def health() -> Dict[str, Any]:
     return {
         'status': 'ok',
         'components': {
-            'embeddingModel': 'sentence-transformers/all-MiniLM-L6-v2',
-            'chroma': 'simulated local vector store',
-            'ollama': 'not connected in this local build',
-            'llmModel': settings.ollama_model,
-            'retrieval': 'keyword and semantic fallback enabled'
+            'gemini': 'configured' if settings.gemini_api_key else 'missing API key',
+            'geminiModel': settings.gemini_model,
+            'knowledgeBase': 'ready' if NITH_DOCUMENTS else 'not indexed',
+            'indexedChunks': len(NITH_DOCUMENTS)
         }
     }
 
@@ -53,17 +51,30 @@ def health() -> Dict[str, Any]:
 def generate_chat_response(payload: ChatRequest) -> Dict[str, Any]:
     start = time.time()
     question = normalize_text(payload.question)
-    matched = retrieve_context(question, FAQ_DATA, top_k=settings.top_k, similarity_threshold=settings.similarity_threshold)
+    matched = retrieve_context(question, NITH_DOCUMENTS, top_k=settings.top_k, similarity_threshold=settings.similarity_threshold)
     if not matched:
-        answer = "I couldn't find reliable information about this topic in my current college knowledge base. Please contact the relevant department for assistance."
+        answer = "I couldn't find this information in the indexed NIT Hamirpur documents. Please check the official NIT Hamirpur website or contact the relevant office."
         sources = []
     else:
-        context_text = '\n'.join(f"Q: {item.get('question')}\nA: {item.get('text')}" for item in matched)
+        if not settings.gemini_api_key:
+            raise HTTPException(status_code=503, detail='GEMINI_API_KEY is not configured for the AI service.')
+
+        context_text = '\n\n'.join(
+            f"Document: {item.get('document')}\n"
+            f"Page: {item.get('page')}\n"
+            f"Official source: {item.get('source_url')}\n"
+            f"Excerpt: {item.get('text')}"
+            for item in matched
+        )
         prompt = build_prompt(question, context_text)
-        answer = generate_answer(question, matched)
+        try:
+            answer = generate_answer(prompt, settings.gemini_api_key, settings.gemini_model)
+        except GeminiGenerationError as error:
+            raise HTTPException(status_code=502, detail=str(error)) from error
         sources = [{
             'documentId': item.get('document_id', 'faq'),
-            'document': item.get('document', 'FAQ dataset'),
+            'document': item.get('document', 'NIT Hamirpur document'),
+            'url': item.get('source_url'),
             'page': item.get('page', 1),
             'relevance': item.get('relevance', 0.0)
         } for item in matched]
@@ -73,7 +84,6 @@ def generate_chat_response(payload: ChatRequest) -> Dict[str, Any]:
         'sources': sources,
         'retrievalStatus': 'success' if matched else 'fallback',
         'processingTime': round(time.time() - start, 2),
-        'prompt': prompt if matched else None,
     }
 
 

@@ -58,7 +58,8 @@ app.get('/api/health', async (_req, res) => {
       express: 'running',
       mongo: 'not configured in this local academic build',
       aiService: aiHealth?.data?.status || 'unavailable',
-      chroma: aiHealth?.data?.components?.chroma || 'unknown'
+      gemini: aiHealth?.data?.components?.gemini || 'unknown',
+      knowledgeBase: aiHealth?.data?.components?.knowledgeBase || 'unknown'
     });
   } catch (error) {
     res.status(503).json({ message: 'Health check failed', error: error.message });

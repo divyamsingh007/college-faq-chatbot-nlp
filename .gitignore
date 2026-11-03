@@ -24,3 +24,6 @@ __pycache__/
 
 # Logs
 *.log
+
+# Locally downloaded NIT Hamirpur document index
+ai-service/data/nith_documents.json

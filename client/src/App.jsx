@@ -4,12 +4,10 @@ import { BookOpenText, BrainCircuit, MessageSquarePlus, Menu, Send, Sparkles, Tr
 import api from './services/api';
 
 const suggestedQuestions = [
-  'How can I apply for admission?',
-  'What hostel facilities are available?',
-  'How does the placement process work?',
-  'What are the library timings?',
-  'What scholarships are available?',
-  'Where can I find academic information?'
+  'What are the hostel admission rules?',
+  'When do first-year classes commence in the 2026-27 odd semester?',
+  "Where can I find NIT Hamirpur's current fee structure?",
+  'What information is in the academic calendar?'
 ];
 
 const formatTime = (timestamp) => {
@@ -26,6 +24,7 @@ function App() {
   const [error, setError] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [backendStatus, setBackendStatus] = useState('checking');
+  const [aiReadiness, setAiReadiness] = useState('checking');
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -58,8 +57,16 @@ function App() {
       try {
         const { data } = await api.get('/health');
         setBackendStatus(data.status === 'ok' ? 'online' : 'offline');
+        setAiReadiness(
+          data.gemini !== 'configured'
+            ? 'Add Gemini API key'
+            : data.knowledgeBase === 'ready'
+              ? 'Ready'
+              : 'Index NIT documents'
+        );
       } catch (_err) {
         setBackendStatus('offline');
+        setAiReadiness('Unavailable');
       }
     };
 
@@ -173,8 +180,8 @@ function App() {
               <div className="flex items-center gap-3">
                 <div className="rounded-xl bg-violet-500/15 p-2 text-violet-300"><BookOpenText size={18} /></div>
                 <div>
-                  <h1 className="text-base font-semibold">College FAQ</h1>
-                  <p className="text-xs text-slate-400">NLP Assistant</p>
+                  <h1 className="text-base font-semibold">NIT Hamirpur</h1>
+                  <p className="text-xs text-slate-400">Student Assistant</p>
                 </div>
               </div>
               <button className="rounded-lg border border-slate-700 p-2 text-slate-300 md:hidden" onClick={() => setSidebarOpen(false)}><Menu size={16} /></button>
@@ -199,7 +206,7 @@ function App() {
 
             <div className="mt-4 rounded-xl border border-slate-800 bg-slate-900/70 p-3 text-xs text-slate-400">
               <div className="mb-2 flex items-center gap-2 font-medium text-slate-300"><BrainCircuit size={14} /> About</div>
-              <p>Student-ready FAQ assistant for admissions, academics, hostel, placements, and more.</p>
+              <p>Answers grounded in official NIT Hamirpur documents.</p>
             </div>
           </div>
         </aside>
@@ -209,10 +216,10 @@ function App() {
             <div className="flex items-center gap-3">
               <button className="rounded-lg border border-slate-700 p-2 text-slate-300 md:hidden" onClick={() => setSidebarOpen(true)}><Menu size={16} /></button>
               <div>
-                <h2 className="text-lg font-semibold text-white">College FAQ Assistant</h2>
+                <h2 className="text-lg font-semibold text-white">NIT Hamirpur Assistant</h2>
                 <div className="flex items-center gap-2 text-xs text-slate-400">
                   <Sparkles size={12} className="text-emerald-400" />
-                  NLP Assistant status: <span className="text-emerald-300">{backendStatus === 'online' ? 'Connected' : 'Offline'}</span>
+                  Gemini and NIT sources: <span className={aiReadiness === 'Ready' ? 'text-emerald-300' : 'text-amber-200'}>{aiReadiness}</span>
                 </div>
               </div>
             </div>
@@ -229,13 +236,13 @@ function App() {
                 <div className="max-w-2xl text-center">
                   <h3 className="mb-4 text-4xl font-semibold tracking-tight text-white">Hello! How can I help you today?</h3>
                   <p className="mb-8 text-base text-slate-200">
-                    I'm your College FAQ Assistant. Ask me anything about admissions, academics, hostels, placements, campus facilities, and more.
+                    I answer questions using official NIT Hamirpur documents. Ask about hostels, fees, or the academic calendar.
                   </p>
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {suggestedQuestions.map((question) => (
                       <button
                         key={question}
-                        onClick={() => handleSuggestedClick(question)}
+                        onClick={() => sendQuestion(question)}
                         className="rounded-2xl border border-slate-700 bg-slate-900/80 p-4 text-left text-sm text-slate-200 transition hover:border-violet-500/50 hover:bg-slate-800"
                       >
                         {question}
@@ -249,7 +256,7 @@ function App() {
                 {messages.map((message) => (
                   <div key={message.id} className={`flex ${message.role === 'USER' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-[82%] rounded-2xl border px-4 py-3 shadow-lg ${message.role === 'USER' ? 'border-violet-500/50 bg-violet-500/15 text-violet-50' : 'border-slate-700 bg-slate-900/90 text-slate-100'}`}>
-                      <div className="mb-2 flex items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-slate-200">
+                      <div className={`mb-2 flex items-center gap-2 text-[10px] uppercase tracking-[0.14em] ${message.role === 'USER' ? 'text-violet-100' : 'text-slate-200'}`}>
                         {message.role === 'USER' ? <UserRound size={12} /> : <Sparkles size={12} />}
                         {message.role === 'USER' ? 'You' : 'Assistant'}
                         <span className="ml-auto">{formatTime(message.timestamp)}</span>
@@ -265,7 +272,12 @@ function App() {
                           <ul className="space-y-1">
                             {message.sources.map((source, index) => (
                               <li key={`${source.document || 'source'}-${index}`}>
-                                • {source.document || 'FAQ'} · relevance {Number(source.relevance || 0).toFixed(2)}
+                                • {source.url ? (
+                                  <a href={source.url} target="_blank" rel="noopener noreferrer" className="underline decoration-slate-500 underline-offset-2 hover:text-white">
+                                    {source.document || 'NIT Hamirpur document'}
+                                  </a>
+                                ) : (source.document || 'NIT Hamirpur document')}
+                                {source.page ? ` · page ${source.page}` : ''}
                               </li>
                             ))}
                           </ul>
@@ -314,7 +326,7 @@ function App() {
               <button
                 type="submit"
                 disabled={!input.trim() || loading}
-                className="inline-flex items-center justify-center rounded-xl bg-violet-500 px-4 py-3 text-sm font-medium text-white transition disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400 hover:bg-violet-400"
+                className="inline-flex items-center justify-center rounded-xl bg-violet-500 px-4 py-3 text-sm font-medium text-white transition disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-200 hover:bg-violet-400"
               >
                 <Send size={16} />
               </button>
