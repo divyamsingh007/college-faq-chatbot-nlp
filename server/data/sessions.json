@@ -1,0 +1,157 @@
+[
+  {
+    "id": "002a6269-3f7c-4c88-8c2c-9a4a0357934a",
+    "title": "New chat",
+    "createdAt": "2026-11-03T16:34:04.808Z",
+    "updatedAt": "2026-11-03T16:34:04.832Z",
+    "messages": [
+      {
+        "id": "3fd5301c-a5f2-4428-891e-bc352a2b7770",
+        "sessionId": "002a6269-3f7c-4c88-8c2c-9a4a0357934a",
+        "role": "USER",
+        "content": "What are the hostel facilities?",
+        "timestamp": "2026-11-03T16:34:04.832Z"
+      },
+      {
+        "id": "bbec6d85-3070-4154-b4e1-dc5398cf62f0",
+        "sessionId": "002a6269-3f7c-4c88-8c2c-9a4a0357934a",
+        "role": "ASSISTANT",
+        "content": "The AI service is currently unavailable. Please try again in a moment.",
+        "sources": [],
+        "timestamp": "2026-11-03T16:34:04.836Z",
+        "error": true
+      }
+    ]
+  },
+  {
+    "id": "9e367d9a-4454-4ffb-9965-fe5754bff531",
+    "title": "New chat",
+    "createdAt": "2026-11-03T16:34:04.802Z",
+    "updatedAt": "2026-11-03T16:34:04.802Z",
+    "messages": []
+  },
+  {
+    "id": "d70a0e9b-e3c3-496e-9d3c-5c7f58062e42",
+    "title": "New chat",
+    "createdAt": "2026-11-03T16:31:52.302Z",
+    "updatedAt": "2026-11-03T16:31:52.321Z",
+    "messages": [
+      {
+        "id": "2706d18e-81df-4136-ac3a-dd3bdd9c241a",
+        "sessionId": "d70a0e9b-e3c3-496e-9d3c-5c7f58062e42",
+        "role": "USER",
+        "content": "What are the hostel facilities?",
+        "timestamp": "2026-11-03T16:31:52.321Z"
+      },
+      {
+        "id": "3165a176-f47c-488b-9428-474e9cc28297",
+        "sessionId": "d70a0e9b-e3c3-496e-9d3c-5c7f58062e42",
+        "role": "ASSISTANT",
+        "content": "The AI service is currently unavailable. Please try again in a moment.",
+        "sources": [],
+        "timestamp": "2026-11-03T16:31:52.324Z",
+        "error": true
+      }
+    ]
+  },
+  {
+    "id": "636d5634-0dcc-408d-be76-1004fb85b3d1",
+    "title": "New chat",
+    "createdAt": "2026-11-03T16:31:52.297Z",
+    "updatedAt": "2026-11-03T16:31:52.297Z",
+    "messages": []
+  },
+  {
+    "id": "7788dfe1-b2b2-404b-aaae-702f09427496",
+    "title": "New chat",
+    "createdAt": "2026-11-03T16:28:43.725Z",
+    "updatedAt": "2026-11-03T16:28:43.745Z",
+    "messages": [
+      {
+        "id": "b1771933-abd2-42d9-9a14-0d8fa85e4cce",
+        "sessionId": "7788dfe1-b2b2-404b-aaae-702f09427496",
+        "role": "USER",
+        "content": "What are the hostel facilities?",
+        "timestamp": "2026-11-03T16:28:43.745Z"
+      },
+      {
+        "id": "a0057523-55e1-4182-b24a-2b3800d49ed8",
+        "sessionId": "7788dfe1-b2b2-404b-aaae-702f09427496",
+        "role": "ASSISTANT",
+        "content": "The AI service is currently unavailable. Please try again in a moment.",
+        "sources": [],
+        "timestamp": "2026-11-03T16:28:43.748Z",
+        "error": true
+      }
+    ]
+  },
+  {
+    "id": "3882917d-6d4b-40f1-b357-17136e7b4243",
+    "title": "New chat",
+    "createdAt": "2026-11-03T16:28:43.720Z",
+    "updatedAt": "2026-11-03T16:28:43.720Z",
+    "messages": []
+  },
+  {
+    "id": "f1ac3aec-15fd-45aa-913c-4e63e6549cc1",
+    "title": "New chat",
+    "createdAt": "2026-11-03T16:13:21.584Z",
+    "updatedAt": "2026-11-03T16:13:21.609Z",
+    "messages": [
+      {
+        "id": "839d6bc0-7778-41d3-81f8-5f78d4e68463",
+        "sessionId": "f1ac3aec-15fd-45aa-913c-4e63e6549cc1",
+        "role": "USER",
+        "content": "What are the hostel facilities?",
+        "timestamp": "2026-11-03T16:13:21.609Z"
+      },
+      {
+        "id": "53fa0ef2-348f-4bcd-821e-58bd005764dd",
+        "sessionId": "f1ac3aec-15fd-45aa-913c-4e63e6549cc1",
+        "role": "ASSISTANT",
+        "content": "The AI service is currently unavailable. Please try again in a moment.",
+        "sources": [],
+        "timestamp": "2026-11-03T16:13:21.612Z",
+        "error": true
+      }
+    ]
+  },
+  {
+    "id": "5e93e7e8-7f52-4521-85a5-33959fc99a08",
+    "title": "New chat",
+    "createdAt": "2026-11-03T16:13:21.577Z",
+    "updatedAt": "2026-11-03T16:13:21.577Z",
+    "messages": []
+  },
+  {
+    "id": "ab41e36f-b2a0-447e-8918-403f8e9d2492",
+    "title": "New chat",
+    "createdAt": "2026-11-03T16:13:00.894Z",
+    "updatedAt": "2026-11-03T16:13:00.915Z",
+    "messages": [
+      {
+        "id": "a46fe31d-602b-40f1-a473-5fd5f5efa674",
+        "sessionId": "ab41e36f-b2a0-447e-8918-403f8e9d2492",
+        "role": "USER",
+        "content": "What are the hostel facilities?",
+        "timestamp": "2026-11-03T16:13:00.915Z"
+      },
+      {
+        "id": "06e66624-7a31-4ebb-8bd1-945c295b407a",
+        "sessionId": "ab41e36f-b2a0-447e-8918-403f8e9d2492",
+        "role": "ASSISTANT",
+        "content": "The AI service is currently unavailable. Please try again in a moment.",
+        "sources": [],
+        "timestamp": "2026-11-03T16:13:00.919Z",
+        "error": true
+      }
+    ]
+  },
+  {
+    "id": "4406e5c0-2992-42f4-a84b-dfe18097496e",
+    "title": "New chat",
+    "createdAt": "2026-11-03T16:13:00.888Z",
+    "updatedAt": "2026-11-03T16:13:00.888Z",
+    "messages": []
+  }
+]
