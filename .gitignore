@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+**/node_modules/
+**/.venv/
+.venv/
+
+# Build output
+client/dist/
+**/dist/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Editor / tool artifacts
+.impeccable/
+.vscode/
+.DS_Store
+
+# Logs
+*.log
